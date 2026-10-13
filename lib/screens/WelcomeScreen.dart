@@ -38,6 +38,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
           Transform.translate(
             offset: Offset(0, -20),
             child: Container(
+              margin: EdgeInsets.only(bottom: 20),
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
                         begin: Alignment.topCenter,
