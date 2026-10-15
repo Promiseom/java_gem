@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:java_gem/widgets/CoffeeItem.dart';
+import 'package:java_gem/widgets/CoffeeItems.dart';
 import 'package:java_gem/widgets/PromoBanner.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen>{
 
   List<String> coffeeDrinks = [
     'All Coffee',
-    'Macchaiato',
+    'Macchiato',
     'Latte',
     'Americano',
     'Espresso',
@@ -22,6 +22,135 @@ class _HomeScreenState extends State<HomeScreen>{
     'Flat White',
     'Mocha'
   ];
+
+  Map<String, List<Map<String, dynamic>>> drinksList = {
+    'Macchiato': [
+      {
+        'name': 'Caffè Mocha Macchiato',
+        'shortDesc': 'Deep Foam',
+        'desc': 'Freshly steamed milk with mocha flavor marked with rich espresso shots.',
+        'cost': 4.55,
+        'image': 'assets/images/coffee_1.png'
+      },
+      {
+        'name': 'Caramel Macchiato',
+        'shortDesc': 'Caramel Drizzle',
+        'desc': 'Freshly steamed milk with vanilla-flavored syrup marked with espresso and caramel drizzle.',
+        'cost': 4.75,
+        'image': 'assets/images/coffee_2.png'
+      },
+    ],
+    'Latte': [
+      {
+        'name': 'Caffè Latte',
+        'shortDesc': 'Steamed Milk',
+        'desc': 'Rich, full-bodied espresso in steamed milk with a light layer of foam.',
+        'cost': 4.25,
+        'image': 'assets/images/coffee_3.png'
+      },
+      {
+        'name': 'Vanilla Oat Latte',
+        'shortDesc': 'Smooth & Sweet',
+        'desc': 'Smooth espresso paired with creamy oat milk and sweet vanilla syrup.',
+        'cost': 5.15,
+        'image': 'assets/images/coffee_4.png'
+      },
+    ],
+    'Americano': [
+      {
+        'name': 'Caffè Americano',
+        'shortDesc': 'Hot Water & Espresso',
+        'desc': 'Espresso shots topped with hot water to produce a light layer of crema.',
+        'cost': 3.45,
+        'image': 'assets/images/coffee_5.png'
+      },
+      {
+        'name': 'Iced Americano',
+        'shortDesc': 'Crisp & Bold',
+        'desc': 'Espresso shots poured over ice and cold water for a crisp taste.',
+        'cost': 3.75,
+        'image': 'assets/images/coffee_1.png'
+      },
+    ],
+    'Espresso': [
+      {
+        'name': 'Single Espresso',
+        'shortDesc': 'Rich Crema',
+        'desc': 'A concentrated shot of pure, rich coffee brewed under high pressure.',
+        'cost': 2.95,
+        'image': 'assets/images/coffee_2.png'
+      },
+      {
+        'name': 'Double Espresso',
+        'shortDesc': 'Double Shot',
+        'desc': 'Two shots of rich espresso for double the bold coffee flavor.',
+        'cost': 3.65,
+        'image': 'assets/images/coffee_3.png'
+      },
+    ],
+    'Cappuccino': [
+      {
+        'name': 'Classic Cappuccino',
+        'shortDesc': 'Thick Foam',
+        'desc': 'Dark, rich espresso lying in wait under a smoothed and stretched layer of thick foam.',
+        'cost': 4.45,
+        'image': 'assets/images/coffee_4.png'
+      },
+      {
+        'name': 'Dry Cappuccino',
+        'shortDesc': 'Airy Foam',
+        'desc': 'Espresso topped almost entirely with airy, thick milk foam.',
+        'cost': 4.45,
+        'image': 'assets/images/coffee_5.png'
+      },
+    ],
+    'Flat White': [
+      {
+        'name': 'Flat White',
+        'shortDesc': 'Silky Microfoam',
+        'desc': 'Bold ristretto shots of espresso infused with silky steamed microfoam.',
+        'cost': 4.65,
+        'image': 'assets/images/coffee_1.png'
+      },
+      {
+        'name': 'Honey Almond Flat White',
+        'shortDesc': 'Sweet & Nutty',
+        'desc': 'Ristretto shots blended with almond milk and a touch of natural honey.',
+        'cost': 5.25,
+        'image': 'assets/images/coffee_2.png'
+      },
+    ],
+    'Mocha': [
+      {
+        'name': 'Caffè Mocha',
+        'shortDesc': 'Bittersweet Chocolate',
+        'desc': 'Espresso combined with bittersweet chocolate sauce and steamed milk.',
+        'cost': 4.85,
+        'image': 'assets/images/coffee_3.png'
+      },
+      {
+        'name': 'White Chocolate Mocha',
+        'shortDesc': 'Creamy Cocoa',
+        'desc': 'Espresso with white chocolate sauce and milk, finished with whipped cream.',
+        'cost': 5.15,
+        'image': 'assets/images/coffee_4.png'
+      },
+    ],
+  };
+
+  List<List<dynamic>> chunkDrinks(int itemsPerChunk){
+    final drinks = drinksList.values.expand((list)=>list).toList();
+    List<List<dynamic>> chunks = [];
+    List<dynamic> chunk = [];
+    for (final (index, drink) in drinks.indexed){
+      chunk.add(drink);
+      if(chunk.length == itemsPerChunk || index == drinks.length - 1){
+        chunks.add(chunk);
+        chunk = [];
+      }
+    }
+    return chunks;
+  }
 
   @override
   Widget build(BuildContext context){
@@ -206,7 +335,30 @@ class _HomeScreenState extends State<HomeScreen>{
                             )
                           ),
 
-                          CoffeeItem()
+                          ...chunkDrinks(2).map((chunk){
+                            return Row(
+                              children: [
+                                Expanded(
+                                    child: CoffeeItem(
+                                        name: chunk[0]['name'],
+                                        desc: chunk[0]['shortDesc'],
+                                        cost: chunk[0]['cost'],
+                                        image: chunk[0]['image']
+                                    )
+                                ),
+                                SizedBox(width: 15),
+                                if (chunk.length > 1)
+                                Expanded(
+                                    child: CoffeeItem(
+                                        name: chunk[1]['name'],
+                                        desc: chunk[1]['shortDesc'],
+                                        cost: chunk[1]['cost'],
+                                        image: chunk[1]['image']
+                                    )
+                                )
+                              ],
+                            );
+                          })
                         ]
                     )
                   )
