@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:java_gem/widgets/CoffeeItems.dart';
-import 'package:java_gem/widgets/PromoBanner.dart';
+import 'package:java_gem/data/coffee_drink.dart';
+import 'package:java_gem/data/coffee_shop_service.dart';
+import 'package:java_gem/widgets/coffee_item.dart';
+import 'package:java_gem/widgets/promo_banner.dart';
 
 class HomeScreen extends StatefulWidget{
   const HomeScreen({super.key});
@@ -11,140 +13,37 @@ class HomeScreen extends StatefulWidget{
 }
 
 class _HomeScreenState extends State<HomeScreen>{
+  late CoffeeShopService _coffeeService;
+  bool _isLoadingDrinksCategories = false;
+  bool _isLoadingDrinks = false;
 
-  List<String> coffeeDrinks = [
-    'All Coffee',
-    'Macchiato',
-    'Latte',
-    'Americano',
-    'Espresso',
-    'Cappuccino',
-    'Flat White',
-    'Mocha'
-  ];
+  late List<String> _coffeeDrinkCategories;
+  late String _currentDrinksFilter;
+  late TabController _tabController;
 
-  Map<String, List<Map<String, dynamic>>> drinksList = {
-    'Macchiato': [
-      {
-        'name': 'Caffè Mocha Macchiato',
-        'shortDesc': 'Deep Foam',
-        'desc': 'Freshly steamed milk with mocha flavor marked with rich espresso shots.',
-        'cost': 4.55,
-        'image': 'assets/images/coffee_1.png'
-      },
-      {
-        'name': 'Caramel Macchiato',
-        'shortDesc': 'Caramel Drizzle',
-        'desc': 'Freshly steamed milk with vanilla-flavored syrup marked with espresso and caramel drizzle.',
-        'cost': 4.75,
-        'image': 'assets/images/coffee_2.png'
-      },
-    ],
-    'Latte': [
-      {
-        'name': 'Caffè Latte',
-        'shortDesc': 'Steamed Milk',
-        'desc': 'Rich, full-bodied espresso in steamed milk with a light layer of foam.',
-        'cost': 4.25,
-        'image': 'assets/images/coffee_3.png'
-      },
-      {
-        'name': 'Vanilla Oat Latte',
-        'shortDesc': 'Smooth & Sweet',
-        'desc': 'Smooth espresso paired with creamy oat milk and sweet vanilla syrup.',
-        'cost': 5.15,
-        'image': 'assets/images/coffee_4.png'
-      },
-    ],
-    'Americano': [
-      {
-        'name': 'Caffè Americano',
-        'shortDesc': 'Hot Water & Espresso',
-        'desc': 'Espresso shots topped with hot water to produce a light layer of crema.',
-        'cost': 3.45,
-        'image': 'assets/images/coffee_5.png'
-      },
-      {
-        'name': 'Iced Americano',
-        'shortDesc': 'Crisp & Bold',
-        'desc': 'Espresso shots poured over ice and cold water for a crisp taste.',
-        'cost': 3.75,
-        'image': 'assets/images/coffee_1.png'
-      },
-    ],
-    'Espresso': [
-      {
-        'name': 'Single Espresso',
-        'shortDesc': 'Rich Crema',
-        'desc': 'A concentrated shot of pure, rich coffee brewed under high pressure.',
-        'cost': 2.95,
-        'image': 'assets/images/coffee_2.png'
-      },
-      {
-        'name': 'Double Espresso',
-        'shortDesc': 'Double Shot',
-        'desc': 'Two shots of rich espresso for double the bold coffee flavor.',
-        'cost': 3.65,
-        'image': 'assets/images/coffee_3.png'
-      },
-    ],
-    'Cappuccino': [
-      {
-        'name': 'Classic Cappuccino',
-        'shortDesc': 'Thick Foam',
-        'desc': 'Dark, rich espresso lying in wait under a smoothed and stretched layer of thick foam.',
-        'cost': 4.45,
-        'image': 'assets/images/coffee_4.png'
-      },
-      {
-        'name': 'Dry Cappuccino',
-        'shortDesc': 'Airy Foam',
-        'desc': 'Espresso topped almost entirely with airy, thick milk foam.',
-        'cost': 4.45,
-        'image': 'assets/images/coffee_5.png'
-      },
-    ],
-    'Flat White': [
-      {
-        'name': 'Flat White',
-        'shortDesc': 'Silky Microfoam',
-        'desc': 'Bold ristretto shots of espresso infused with silky steamed microfoam.',
-        'cost': 4.65,
-        'image': 'assets/images/coffee_1.png'
-      },
-      {
-        'name': 'Honey Almond Flat White',
-        'shortDesc': 'Sweet & Nutty',
-        'desc': 'Ristretto shots blended with almond milk and a touch of natural honey.',
-        'cost': 5.25,
-        'image': 'assets/images/coffee_2.png'
-      },
-    ],
-    'Mocha': [
-      {
-        'name': 'Caffè Mocha',
-        'shortDesc': 'Bittersweet Chocolate',
-        'desc': 'Espresso combined with bittersweet chocolate sauce and steamed milk.',
-        'cost': 4.85,
-        'image': 'assets/images/coffee_3.png'
-      },
-      {
-        'name': 'White Chocolate Mocha',
-        'shortDesc': 'Creamy Cocoa',
-        'desc': 'Espresso with white chocolate sauce and milk, finished with whipped cream.',
-        'cost': 5.15,
-        'image': 'assets/images/coffee_4.png'
-      },
-    ],
-  };
+  @override
+  void initState(){
+    _coffeeService = CoffeeShopService();
+    _coffeeDrinkCategories = _coffeeService.getCoffeeDrinkCategories();
+    _currentDrinksFilter = _coffeeDrinkCategories.first;
+    super.initState();
+  }
 
-  List<List<dynamic>> chunkDrinks(int itemsPerChunk){
-    final drinks = drinksList.values.expand((list)=>list).toList();
-    List<List<dynamic>> chunks = [];
-    List<dynamic> chunk = [];
-    for (final (index, drink) in drinks.indexed){
+  @override
+  void dispose(){
+    super.dispose();
+  }
+
+  List<List<CoffeeDrink>> chunkDrinks(
+      int itemsPerChunk, {
+        String drinksFilter = 'All Coffee',
+      }) {
+    final drinks = _coffeeService.getFilteredDrinks(filter: drinksFilter);
+    List<List<CoffeeDrink>> chunks = [];
+    List<CoffeeDrink> chunk = [];
+    for (final (index, drink) in drinks.indexed) {
       chunk.add(drink);
-      if(chunk.length == itemsPerChunk || index == drinks.length - 1){
+      if (chunk.length == itemsPerChunk || index == drinks.length - 1) {
         chunks.add(chunk);
         chunk = [];
       }
@@ -201,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen>{
                                             hint: Text(
                                                 'Bilzen, Tanjungbalai',
                                                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                                  color: Theme.of(context).colorScheme.onSurfaceVariant
                                                 )
                                             ),
                                             items: [
@@ -311,11 +210,17 @@ class _HomeScreenState extends State<HomeScreen>{
                           padding: EdgeInsets.only(left: 20, right: 20),
                           child: Column(
                               children: [
+                                // Drinks Filter Tab
                                 Container(
                                     margin: EdgeInsets.only(top: 30, bottom:30),
                                     child: DefaultTabController(
-                                        length: coffeeDrinks.length,
+                                        length: _coffeeDrinkCategories.length,
                                         child: TabBar(
+                                          onTap: (index){
+                                            setState((){
+                                              _currentDrinksFilter = _coffeeDrinkCategories[index];
+                                            });
+                                          },
                                             tabAlignment: TabAlignment.center,
                                             isScrollable: true,
                                             labelColor: Theme.of(context).colorScheme.onPrimary,
@@ -328,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen>{
                                                 borderRadius: BorderRadius.circular(8)
                                             ),
                                             tabs: [
-                                              ...coffeeDrinks.map((drink){
+                                              ..._coffeeDrinkCategories.map((drink){
                                                 return Tab(height: 40, text: drink);
                                               })
                                             ]
@@ -336,25 +241,25 @@ class _HomeScreenState extends State<HomeScreen>{
                                     )
                                 ),
 
-                                ...chunkDrinks(2).map((chunk){
+                                ...chunkDrinks(2, drinksFilter: _currentDrinksFilter).map((chunk){
                                   return Row(
                                     children: [
                                       Expanded(
                                           child: CoffeeItem(
-                                              name: chunk[0]['name'],
-                                              desc: chunk[0]['shortDesc'],
-                                              cost: chunk[0]['cost'],
-                                              image: chunk[0]['image']
+                                              name: chunk[0].name,
+                                              desc: chunk[0].shortDescription,
+                                              cost: chunk[0].cost,
+                                              image: chunk[0].image
                                           )
                                       ),
                                       SizedBox(width: 15),
                                       if (chunk.length > 1)
                                         Expanded(
                                             child: CoffeeItem(
-                                                name: chunk[1]['name'],
-                                                desc: chunk[1]['shortDesc'],
-                                                cost: chunk[1]['cost'],
-                                                image: chunk[1]['image']
+                                                name: chunk[1].name,
+                                                desc: chunk[1].shortDescription,
+                                                cost: chunk[1].cost,
+                                                image: chunk[1].image
                                             )
                                         )
                                     ],

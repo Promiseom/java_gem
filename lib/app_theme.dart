@@ -10,7 +10,7 @@ final lightColorScheme = ColorScheme(
     onSecondary: Colors.black,
     error: Colors.red,
     onError: Colors.white,
-    surface: Colors.white,
+    surface: Colors.white.withAlpha(247),
     onSurface: ColorPalette.darkGray,
     onSurfaceVariant: ColorPalette.lightGrey
 );
@@ -19,7 +19,6 @@ final lightTheme = ThemeData(
   useMaterial3: true,
   colorScheme: lightColorScheme,
   textTheme: GoogleFonts.soraTextTheme().copyWith(
-
     headlineLarge: GoogleFonts.sora(fontSize: 32, height: 1.15, fontWeight: FontWeight.w600),
     headlineMedium: GoogleFonts.sora(fontSize: 24, height: 1.2, fontWeight: FontWeight.w600),
     headlineSmall: GoogleFonts.sora(fontSize: 18, height: 0.7, fontWeight: FontWeight.w600),
