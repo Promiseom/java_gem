@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:java_gem/data/coffee_drink.dart';
 import 'package:java_gem/data/coffee_shop_service.dart';
 import 'package:java_gem/widgets/coffee_item.dart';
 import 'package:java_gem/widgets/promo_banner.dart';
 
-class HomeScreen extends StatefulWidget{
+class HomeScreen extends ConsumerStatefulWidget{
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState()=> _HomeScreenState();
+  ConsumerState<HomeScreen> createState()=> _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen>{
+class _HomeScreenState extends ConsumerState<HomeScreen>{
   late CoffeeShopService _coffeeService;
   bool _isLoadingDrinksCategories = false;
   bool _isLoadingDrinks = false;

@@ -96,7 +96,6 @@ class _CoffeeDetailsScreenState extends State<CoffeeDetailsScreen>{
                         Text(
                             'Price',
                             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontSize: 17,
                               height: 1,
                               color: Theme.of(context).colorScheme.onSurface.withAlpha(150)
                             )
@@ -116,7 +115,9 @@ class _CoffeeDetailsScreenState extends State<CoffeeDetailsScreen>{
                     child: SizedBox(
                       height: double.infinity,
                       child: TextButton(
-                          onPressed: (){},
+                          onPressed: (){
+                            GoRouter.of(context).push('/order');
+                          },
                           child: Text(
                               'Buy Now',
                               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -127,7 +128,7 @@ class _CoffeeDetailsScreenState extends State<CoffeeDetailsScreen>{
                         style: Theme.of(context).textButtonTheme.style?.copyWith(
                             shape: WidgetStateProperty.all(
                                 RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)
+                                    borderRadius: BorderRadius.circular(20)
                                 )
                             )
                         ),

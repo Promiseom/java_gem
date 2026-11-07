@@ -10,7 +10,7 @@ final lightColorScheme = ColorScheme(
     onSecondary: Colors.black,
     error: Colors.red,
     onError: Colors.white,
-    surface: Colors.white.withAlpha(247),
+    surface: Colors.white.withAlpha(245),
     onSurface: ColorPalette.darkGray,
     onSurfaceVariant: ColorPalette.lightGrey
 );

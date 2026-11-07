@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:java_gem/app_theme.dart';
 import 'package:java_gem/screens/coffee_details_screen.dart';
 import 'package:java_gem/screens/home_screen.dart' show HomeScreen;
+import 'package:java_gem/screens/order_screen.dart';
 import 'package:java_gem/screens/welcome_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -28,7 +30,11 @@ class MyApp extends StatelessWidget {
             final name = state.pathParameters['coffee_name'];
             return CoffeeDetailsScreen(drinkName: name!);
           }
-      )
+      ),
+      GoRoute(
+          path: '/order',
+          builder: (BuildContext context, GoRouterState state)=> OrderScreen()
+      ),
     ]
   );
 
