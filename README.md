@@ -4,7 +4,7 @@ flutter implementation of the java gem app design
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is a starting point for a food ordering app or an e-commerce application.
 
 A few resources to get you started if this is your first Flutter project:
 
